@@ -52,41 +52,31 @@ class Network:
     def show(self):
         G = nx.DiGraph()
 
-        # Add follow edges (blue, solid)
         for username, account in self.network.items():
             for followed in account.following:
                 G.add_edge(username, followed.username, color='blue', style='solid', label='follows')
 
-        # Add block edges (red, dashed)
         for username, account in self.network.items():
             for blocked in account.blocked:
                 G.add_edge(username, blocked.username, color='red', style='dashed', label='blocks')
 
-        # Extract visual properties
         edge_colors = [G[u][v]['color'] for u, v in G.edges()]
         edge_styles = [G[u][v]['style'] for u, v in G.edges()]
 
-        # Drawing with spring layout
         pos = nx.spring_layout(G, k=0.15, iterations=20)
         plt.figure(figsize=(14, 14))
 
-        # Draw nodes
         nx.draw_networkx_nodes(G, pos, node_size=500)
 
-        # Draw labels
         nx.draw_networkx_labels(G, pos, font_size=8)
 
-        # Separate edges by style
         solid_edges = [(u, v) for u, v in G.edges() if G[u][v]['style'] == 'solid']
         dashed_edges = [(u, v) for u, v in G.edges() if G[u][v]['style'] == 'dashed']
 
-        # Draw follow (solid) edges
         nx.draw_networkx_edges(G, pos, edgelist=solid_edges, edge_color='blue', arrows=True)
 
-        # Draw block (dashed) edges
         nx.draw_networkx_edges(G, pos, edgelist=dashed_edges, edge_color='red', style='dashed', arrows=True)
 
-        # Add legend
         import matplotlib.lines as mlines
         follow_line = mlines.Line2D([], [], color='blue', label='follows')
         block_line = mlines.Line2D([], [], color='red', linestyle='dashed', label='blocks')
@@ -127,13 +117,13 @@ class Network:
 
     
 
-# print('hello')
-# network = Network('./network.txt')
+print('hello')
+network = Network('./network.txt')
 
-# for username, details in network.toDict().items():
-#     print('@'+username)
-#     for key, val in details.items():
-#         print(key, val)
-#     print()
-# network.analytics()
-# network.show()
+for username, details in network.toDict().items():
+    print('@'+username)
+    for key, val in details.items():
+        print(key, val)
+    print()
+network.analytics()
+network.show()
